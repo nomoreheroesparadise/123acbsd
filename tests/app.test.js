@@ -3,28 +3,47 @@ const request = require('supertest');
 
 const {app} = require('./../app');
 
-const utils = require('../lib/utils');
+const {insert, getBookByTitle} = require('../lib/utils');
+const bigdata = require('../lib/bigdata');
 
-
-let books = [{"title": "cc", "author": "test"},{"title": "ee", "author": "test"},{"title": "aa", "author": "test"}];
-let sorted = [{"title": "aa", "author": "test"},{"title": "cc", "author": "test"},{"title": "ee", "author": "test"}];
 
 let book = {"title":"Dziennik", "author":"Eugene Delacroix"};
 
+let unsortedBooksArray = [{"title":"dra", "author":"test"}, {"title":"az", "author":"test"}, {"title":"wtf", "author":"test"},{"title":"bum", "author":"test"},{"title":"bum", "author":"test"}];
+let sortedBooksArray = [{"title":"az", "author":"test"},{"title":"bum", "author":"test"},{"title":"bum", "author":"test"},{"title":"dra", "author":"test"},{"title":"wtf", "author":"test"}];
+let addedBooks = [];
 
-describe('Sorting books', () => { 
-	let sortedBooks = utils.mergeSort(books);
+describe("Adding books alphabetically", () => {
+	unsortedBooksArray.forEach((book) => insert(book, addedBooks));
 	it('should return an array', (done) => {
-		expect(sortedBooks).toBeAn('array');
+		expect(addedBooks).toBeAn('array');
 		done();
-	})
+	});
 	it('should should return an sorted array ', (done) => {
-		expect(sortedBooks).toEqual(sorted);
+		expect(addedBooks).toEqual(sortedBooksArray);
+		done();
+	});
+});
+
+
+describe("Finding book in books", () => {
+	it('should return an object', (done) => {
+		expect(getBookByTitle('dra', addedBooks)).toBeAn('object');
 		done();
 	})
-})
-
-
+	it('should should return a correct book ', (done) => {
+		expect(getBookByTitle('dra', addedBooks)).toEqual({"title":"dra", "author":"test"});
+		done();
+	});
+	it('should should return a false ', (done) => {
+		expect(getBookByTitle('a', addedBooks)).toEqual(false);
+		done();
+	});
+	it('should should return a closest book ', (done) => {
+		expect(getBookByTitle('azbra', addedBooks)).toEqual({"title":"az", "author":"test"});
+		done();
+	});
+});
 
 describe('POST /book', () => {
 	it('should return 204 if added properly',(done) => {
@@ -38,7 +57,7 @@ describe('POST /book', () => {
 				}
 				done();
 			})
-	})
+	});
 	it('should not add book with invalid data', (done) => {
 		request(app)
 			.post('/book')
@@ -50,8 +69,8 @@ describe('POST /book', () => {
 				}
 				done();
 			})
-	})
-})
+	});
+});
 
 describe('GET /book/:title', () => {
 	it('should return book by title', (done) => {
@@ -71,7 +90,7 @@ describe('GET /book/:title', () => {
 				expect(res.body.title).toBe(book.title);
 			}) 
 			.end(done);
-	})
+	});
 	it('should return error message if it cant find lower alphabetically title', (done) => {
 		request(app)
 			.get('/book/Albatros')
@@ -80,5 +99,5 @@ describe('GET /book/:title', () => {
 				expect(res.body.errorMsg).toBe("Currently no books");
 			})
 			.end(done)
-	})
-})
+	});
+});

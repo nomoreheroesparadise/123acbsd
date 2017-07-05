@@ -10,7 +10,7 @@ let validator = {
 	},
 	validateGet: function(req){
 		req.checkParams('title', 'Title must not by empty').notEmpty();
-		req.checkParams('title', 'Title has to be between 1 and 32 characters long.').len(2,32);
+		req.checkParams('title', 'Title has to be between 1 and 32 characters long.').len(1,32);
 		req.checkParams('title', 'Title must be a string').isAscii();
 		return req.validationErrors();
 	}
