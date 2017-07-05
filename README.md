@@ -13,7 +13,9 @@ To run tests:
 ##### POST /book 
 Adds alphabetically book to the book array. 
 Book object: 
->  {"title": "test", "author": "test"}
+```
+{"title": "test", "author": "test"}
+ ```
 Title must be ASCII string between 1 and 32 chars.
 Author must be ASCII string between 1 and 32 chars.
 
