@@ -3,14 +3,13 @@ const request = require('supertest');
 
 const {app} = require('./../app');
 
-const {insert, getBookByTitle} = require('../lib/utils');
+const {insert, getBookByTitle,alphabeticalCompare} = require('../lib/utils');
 const bigdata = require('../lib/bigdata');
 
 
 let book = {"title":"Dziennik", "author":"Eugene Delacroix"};
 
 let unsortedBooksArray = [{"title":"dra", "author":"test"}, {"title":"az", "author":"test"}, {"title":"wtf", "author":"test"},{"title":"bum", "author":"test"},{"title":"bum", "author":"test"}];
-let sortedBooksArray = [{"title":"az", "author":"test"},{"title":"bum", "author":"test"},{"title":"bum", "author":"test"},{"title":"dra", "author":"test"},{"title":"wtf", "author":"test"}];
 let addedBooks = [];
 
 describe("Adding books alphabetically", () => {
@@ -20,7 +19,7 @@ describe("Adding books alphabetically", () => {
 		done();
 	});
 	it('should should return an sorted array ', (done) => {
-		expect(addedBooks).toEqual(sortedBooksArray);
+		expect(addedBooks).toEqual(unsortedBooksArray.sort(alphabeticalCompare));
 		done();
 	});
 });
